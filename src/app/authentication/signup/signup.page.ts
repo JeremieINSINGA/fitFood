@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { User } from 'src/app/models/User.model';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-signup',
@@ -18,7 +19,8 @@ export class SignupPage implements OnInit {
     private authenticationService: AuthenticationService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private platform: Platform
   ) { }
 
   ngOnInit() {
@@ -49,9 +51,26 @@ export class SignupPage implements OnInit {
             }
           );
         }
-      )
+      );
     } else {
       alert('Les mots de passes saisis doivent être identiques');
+    }
+  }
+
+  facebookLogin() {
+    if (this.platform.is('cordova')) {
+      console.log('PLateforme cordova');
+      // this.facebookCordova();
+      this.authenticationService.facebookCordova();
+    } else {
+      console.log('PLateforme Web');
+      // this.facebookWeb();
+      this.authenticationService.facebookWeb().then(
+        (data) => {
+          console.log(data);
+          this.router.navigate(['/profile']);
+        }
+      );
     }
   }
 
